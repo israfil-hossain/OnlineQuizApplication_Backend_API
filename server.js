@@ -61,8 +61,8 @@ app.use(errorHandler);
 const start = async ()=>{
   try {
         connectDB();
-        server.listen(process.env.PORT); 
-        console.log(`App is running on http://localhost:${process.env.PORT}`,);
+        server.listen(process.env.PORT || 8000); 
+        console.log(`App is running on ${process.env.PORT}`,);
   } catch (err) {
     error(`Opps ! failed to connect the server ${err}`,
       );
