@@ -9,6 +9,6 @@ const { getSubscription, updateSubscription } = require("../controller/subscript
 router.get("/", getSubscription);
 
 // update Subscription
-router.put("/update", updateSubscription);
+router.put("/update/:id", updateSubscription);
 
 module.exports = router;

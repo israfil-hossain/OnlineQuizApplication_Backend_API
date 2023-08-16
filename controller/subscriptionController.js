@@ -20,21 +20,26 @@ const getSubscription = async (req, res, next) => {
 async function updateSubscription(req, res, next) {
   try {
     const { subscription } = req.body;
-    let foundSubscription = await Subscription.findOne({ subscription });
+    const { id } = req.params;
+
+    // Find the question by ID
+    let foundSubscription  = await Subscription.findById(id);
+    // let foundSubscription = await Subscription.findOne({ subscription });
     if (!foundSubscription) {
       foundSubscription = new Subscription({ subscription });
       await foundSubscription.save();
       res.status(200).json({
         success: true,
-        message: "Subscription Update Successfully",
+        message: "Subscription Add Successfully",
         data: foundSubscription,
       });
+      
     } else {
       foundSubscription.subscription = subscription;
       await foundSubscription.save();
       res.status(200).json({
         success: true,
-        message: "Subscription Add Successfully !",
+        message: "Subscription Update Successfully !",
         data: foundSubscription,
       });
     }
