@@ -42,9 +42,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Routing Setup .........
-app.get("/",(req,res)=>{
-  res.send("Server is OK")
-});
+
 app.use("/api", auth);
 app.use("/api/users", users);
 app.use("/api/category",category);
