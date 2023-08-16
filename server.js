@@ -22,6 +22,7 @@ const alldata = require("./routes/dashboardRoute");
 const questions = require("./routes/questionsRoute");
 const study = require("./routes/studyRoute");
 const result = require("./routes/resultRoute");
+const subscription = require("./routes/subscriptionRoute");
 
 //config ....... 
 const app = express();
@@ -51,6 +52,7 @@ app.use("/api/tags",tags)
 app.use("/api/alldata",alldata);
 app.use("/api/study",study);
 app.use("/api/result",result);
+app.use("/api/subscription",subscription);
 
 // 404 not found handler
 app.use(notFoundHandler);
@@ -62,7 +64,7 @@ const start = async ()=>{
   try {
         connectDB();
         server.listen(process.env.PORT || 8000); 
-        // console.log(`App is running on ${process.env.PORT}`,);
+        console.log(`App is running on ${process.env.PORT}`,);
   } catch (err) {
     error(`Opps ! failed to connect the server ${err}`,
       );
