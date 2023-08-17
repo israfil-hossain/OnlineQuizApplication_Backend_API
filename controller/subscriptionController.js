@@ -18,31 +18,26 @@ const getSubscription = async (req, res, next) => {
 };
 
 async function updateSubscription(req, res, next) {
-  try {
-    const { subscription } = req.body;
-    const { id } = req.params;
+  const { id } = req.params;
+  const { subscription } = req.body;
 
-    // Find the question by ID
-    let foundSubscription  = await Subscription.findById(id);
-    // let foundSubscription = await Subscription.findOne({ subscription });
-    if (!foundSubscription) {
-      foundSubscription = new Subscription({ subscription });
-      await foundSubscription.save();
-      res.status(200).json({
-        success: true,
-        message: "Subscription Add Successfully",
-        data: foundSubscription,
-      });
-      
-    } else {
-      foundSubscription.subscription = subscription;
-      await foundSubscription.save();
-      res.status(200).json({
-        success: true,
-        message: "Subscription Update Successfully !",
-        data: foundSubscription,
-      });
+  try {
+    const data = await Subscription.findByIdAndUpdate(
+      id,
+      { $set: { subscription } },
+      { new: true }
+    );
+
+    if (!data) {
+      return res.status(404).json({ error: 'Subscription not found' });
     }
+    res.status(200).json({
+      success: true,
+      message: "Subscription Update Successfully !",
+      data: subscription,
+    });
+
+   
   } catch (err) {
     console.log(err);
     return res.status(500).json({
