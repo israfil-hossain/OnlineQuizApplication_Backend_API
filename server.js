@@ -23,6 +23,8 @@ const questions = require("./routes/questionsRoute");
 const study = require("./routes/studyRoute");
 const result = require("./routes/resultRoute");
 const subscription = require("./routes/subscriptionRoute");
+const controlpanel = require("./routes/controlPanelRoute");
+const forgotpassword = require("./routes/forgot_password_Route");
 
 //config ....... 
 const app = express();
@@ -54,6 +56,8 @@ app.use("/api/alldata",alldata);
 app.use("/api/study",study);
 app.use("/api/result",result);
 app.use("/api/subscription",subscription);
+app.use("/api/control",controlpanel);
+app.use("/api/auth",forgotpassword);
 
 // 404 not found handler
 app.use(notFoundHandler);

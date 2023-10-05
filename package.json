@@ -1,5 +1,5 @@
 {
-  "name": "pngcrown_backend",
+  "name": "quiz_application",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -28,6 +28,8 @@
     "mongoose": "^6.9.0",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
-    "request": "^2.88.2"
+    "nodemailer": "^6.9.5",
+    "request": "^2.88.2",
+    "uuid": "^9.0.1"
   }
 }
