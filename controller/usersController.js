@@ -66,7 +66,7 @@ async function addUser(req, res, next) {
       return res.status(200).json({
         success: true,
         message: "User added Successfully ! ",
-        data: newUser,
+        // data: newUser,
         // success:true,
       });
     } else {
@@ -74,7 +74,7 @@ async function addUser(req, res, next) {
       return res.status(200).json({
         success: true,
         message: "User added Successfully ! ",
-        data: newUser,
+        // data: newUser,
         // success:true,
       });
     }
@@ -146,7 +146,7 @@ async function updateUser(req, res, next) {
         return res.status(200).json({
           success: true,
           message: "User updated successfully!",
-          data: user,
+          // data: user,
         });
       });
     } else {
@@ -156,7 +156,7 @@ async function updateUser(req, res, next) {
       return res.status(200).json({
         success: true,
         message: "User updated successfully!",
-        data: user,
+        // data: user,
       });
     }
   } catch (err) {
@@ -172,25 +172,7 @@ async function updateUser(req, res, next) {
     });
   }
 }
-// Update User Api Controller
-// const updateUser = async (req, res) => {
-//   try {
-//     const updatedPerson = await User.findByIdAndUpdate(
-//       req.params.id,
-//       req.body,
-//       {
-//         new: true,
-//       }
-//     );
-//     if (!updatedPerson) {
-//       return res.status(404).send("User not found");
-//     }
-//     res.send(updatedPerson);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(400).send(error.message);
-//   }
-// };
+
 
 // Delete User Api Controller
 const deleteUser = async (req, res, next) => {

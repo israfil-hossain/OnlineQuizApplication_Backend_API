@@ -22,12 +22,11 @@ const peopleSchema = mongoose.Schema(
       default: "user",
       enum: ["user", "admin", "superadmin"],
     },
-    
-    usertype:{
-      type:String,
-      default:"unpaid",
-      enum:["paid","unpaid"]
 
+    usertype: {
+      type: String,
+      default: "unpaid",
+      enum: ["paid", "unpaid"],
     },
     mobile: {
       type: String,
@@ -37,6 +36,9 @@ const peopleSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    resetToken: {
+      type: String,
+    },
     lastActivity: {
       type: Date,
       default: Date.now,
@@ -44,8 +46,8 @@ const peopleSchema = mongoose.Schema(
     profile: {
       type: String,
     },
-    publicid:{
-      type:String,
+    publicid: {
+      type: String,
     },
     activityLog: [
       {
