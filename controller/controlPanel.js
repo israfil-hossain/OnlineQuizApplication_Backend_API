@@ -18,7 +18,7 @@ const getAllData = async (req,res)=>{
     }
 }
 
-const addControlPanel = async (re,res)=>{
+const addControlPanel = async (req,res)=>{
     try{
         const{title,status,banner,subtitle,link} = req.body; 
         const newControlPanel = new ControlPanel({title,status,banner,subtitle,link});
