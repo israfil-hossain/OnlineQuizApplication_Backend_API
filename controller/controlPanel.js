@@ -20,8 +20,8 @@ const getAllData = async (req,res)=>{
 
 const addControlPanel = async (re,res)=>{
     try{
-        const{title,status,banner} = req.body; 
-        const newControlPanel = new ControlPanel({title,status,banner});
+        const{title,status,banner,subtitle,link} = req.body; 
+        const newControlPanel = new ControlPanel({title,status,banner,subtitle,link});
         if(req.file){
             cloudinary.uploader.upload(req.file.path, async(err,result)=>{
               if(err){
@@ -35,11 +35,11 @@ const addControlPanel = async (re,res)=>{
               //save the question to the database 
               await newControlPanel.save(); 
       
-              res.status(200).json({success:true, data: newControlPanel}); 
+              res.status(200).json({success:true, data: newControlPanel,statusText: "Update Successfully"}); 
             });
           }else{
             await newControlPanel.save();
-            res.status(200).json({success:true, data: newControlPanel});
+            res.status(200).json({success:true, data: newControlPanel,statusText: "Update Successfully"});
           }
     }
     catch(err){
@@ -50,7 +50,7 @@ const addControlPanel = async (re,res)=>{
 // Update ControlPanel Api Controller 
 const updateControlPanel = async(req,res,next)=>{
     try{
-        const{title,status,banner} = req.body; 
+        const{title,status,banner,subtitle,link} = req.body; 
         const {id} = req.params;
     
         // Find the category by ID 
@@ -60,7 +60,9 @@ const updateControlPanel = async(req,res,next)=>{
           return res.status(404).json({success: false, error : "Home Settings not found"});
         }
         controlpanel.title = title; 
-        controlpanel.status = status;    
+        controlpanel.status = status;  
+        controlpanel.subtitle = subtitle; 
+        controlpanel.link = link;  
         // Check if an image was uploaded 
         if(req.file){
           cloudinary.uploader.upload(req.file.path, async(err, result)=>{
@@ -72,11 +74,11 @@ const updateControlPanel = async(req,res,next)=>{
             controlpanel.publicid = result.public_id; 
     
             await controlpanel.save();
-            res.json({success: true, data: category}); 
+            res.json({success: true, data: controlpanel , statusText: "Update Successfully"}); 
           }); 
         }else{
           await controlpanel.save(); 
-          res.json({success: true, data: controlpanel}); 
+          res.json({success: true, data: controlpanel,statusText: "Update Successfully"}); 
         }
     
       }

@@ -7,6 +7,14 @@ const controlPanelSchema = mongoose.Schema({
     title:{
         type:'string',
     },
+    subtitle:{
+        type:'string',
+    },
+    
+    link: {
+        type:'string',
+    },
+
     publicid:{
         type:String,
     },
