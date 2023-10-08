@@ -74,11 +74,11 @@ const updateControlPanel = async(req,res,next)=>{
             controlpanel.publicid = result.public_id; 
     
             await controlpanel.save();
-            res.json({success: true, data: controlpanel , statusText: "Update Successfully"}); 
+            res.status(201).json({success:true,data: controlpanel , statusText: "Update Successfully"})
           }); 
         }else{
           await controlpanel.save(); 
-          res.json({success: true, data: controlpanel,statusText: "Update Successfully"}); 
+          res.status(201).json({success:true,data: controlpanel , statusText: "Update Successfully"})
         }
     
       }
