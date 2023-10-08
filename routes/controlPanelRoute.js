@@ -6,6 +6,7 @@ const {
   getAllData,
   addControlPanel,
   updateControlPanel,
+  deleteControlPanel
 } = require("../controller/controlPanel");
 
 const {
@@ -24,5 +25,5 @@ router.post(
   addControlPanel
 );
 router.put("/update/:id", upload, updateControlPanel);
-
+router.delete("/delete/:id",deleteControlPanel)
 module.exports = router;

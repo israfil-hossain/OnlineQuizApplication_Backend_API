@@ -87,10 +87,33 @@ const updateControlPanel = async(req,res,next)=>{
       }
     
 }
+const deleteControlPanel =async (req, res, next) =>{
+
+  const id = req.params.id;
+  ControlPanel.findByIdAndDelete(id, function(err,controldata){
+    if(err){
+      console.log(err); 
+      return res.status(500).json({error: "Failed to delete Control Settings Data from database"});
+    }
+    if(!controldata){
+      return res.status(404).json({error: "ControlPanel Data not Found"}); 
+    }
+    // Delete image form Cloudinary
+    cloudinary.uploader.destroy(controldata.publicid, function(err,result){
+      if(err){
+        console.log(err); 
+        return res.status(500).json({error: "Failded to delete image from Cloudinary"})
+      }
+      console.log(result); 
+      res.status(200).json({message: "Control Settings data deleted successfully"});
+    })
+  })
+};
 
 module.exports = {
     getAllData,
     addControlPanel,
-    updateControlPanel
+    updateControlPanel,
+    deleteControlPanel
 
 }
