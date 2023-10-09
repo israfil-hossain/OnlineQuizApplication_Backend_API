@@ -7,11 +7,7 @@ const controlpanelValidator = [
       min: 2,
     })
     .withMessage("Home Page settings title is required !"),
-  check("status")
-    .isLength({
-      min: 3,
-    })
-    .withMessage("Home Page settings Status is required !"),
+ 
 ];
 
 const controlpanelValidationHandler = (req, res, next) => {
