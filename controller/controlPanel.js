@@ -52,6 +52,8 @@ const addControlPanel = async (req, res) => {
         status: req.body.status,
         link: req.body.link,
         subtitle: req.body.subtitle,
+        text:req.body.text,
+        buttonName: req.body.buttonName,
       });
 
       // Upload image to Cloudinary
@@ -115,6 +117,8 @@ const updateControlPanel = (req, res) => {
             link: req.body.link,
             title: req.body.title,
             subtitle: req.body.subtitle,
+            buttonName: req.body.buttonName,
+            text:req.body.text,
           },
           { new: true },
           function (err, updatedSlider) {
@@ -131,6 +135,8 @@ const updateControlPanel = (req, res) => {
               link: updatedSlider.link, // Updated here
               title: updatedSlider.title, // Updated here
               subtitle: updatedSlider.subtitle, // Updated here
+              buttonName: req.body.buttonName,
+              text:req.body.text,
             });
           }
         );
@@ -145,6 +151,7 @@ const updateControlPanel = (req, res) => {
           text: req.body.text,
           title: req.body.title, // Updated here
           subtitle: req.body.subtitle,
+          buttonName: req.body.buttonName,
         },
         { new: true },
         function (err, updatedSlider) {
@@ -160,6 +167,7 @@ const updateControlPanel = (req, res) => {
             status: updatedSlider.status,
             link: updatedSlider.link,
             text: updatedSlider.text,
+            buttonName: req.body.buttonName,
           });
         }
       );

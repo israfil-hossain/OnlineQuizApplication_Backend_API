@@ -11,6 +11,9 @@ const controlPanelSchema = mongoose.Schema(
     subtitle: {
       type: String,
     },
+    buttonName: {
+      type: String,
+    },
     link: {
       type: String,
     },
@@ -22,6 +25,9 @@ const controlPanelSchema = mongoose.Schema(
       enum: ["active", "inactive"],
       default: "inactive",
     },
+    text:{
+      type:String,
+    }
   },
   { timestamps: true }
 );
