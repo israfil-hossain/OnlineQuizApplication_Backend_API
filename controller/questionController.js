@@ -1,5 +1,4 @@
 const multer = require("multer");
-// const ImageModel = require("../models/imageSchema");
 const Question = require("../models/QuestionSchema");
 const Result = require("../models/ResultSchema");
 
