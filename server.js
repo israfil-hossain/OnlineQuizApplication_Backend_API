@@ -12,6 +12,7 @@ const connectDB = require("./db");
 const {notFoundHandler,errorHandler } = require("./middleware/common/errorHandler"); 
 
 // Routes Data import ....
+const home = require("./routes/homeRoute");
 const auth = require("./routes/loginRoute");
 const users = require("./routes/usersRoute");
 const category = require("./routes/categoryRoute");
@@ -44,7 +45,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Routing Setup .........
-
+app.use("/",home);
 app.use("/api", auth);
 app.use("/api/users", users);
 app.use("/api/category",category);
