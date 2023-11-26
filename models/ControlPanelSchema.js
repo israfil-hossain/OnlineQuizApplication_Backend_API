@@ -1,25 +1,36 @@
 const mongoose = require("mongoose");
 
-const controlPanelSchema = mongoose.Schema({
-    banner: {
-        type: 'string',
+const controlPanelSchema = mongoose.Schema(
+  {
+    image: {
+      type: String,
     },
-    title:{
-        type:'string',
+    title: {
+      type: String,
     },
-    publicid:{
-        type:String,
+    subtitle: {
+      type: String,
+    },
+    buttonName: {
+      type: String,
+    },
+    link: {
+      type: String,
+    },
+    publicid: {
+      type: String,
     },
     status: {
-        type:String,
-        trim: true,
-        lowercase: true, 
-        required : true,
+      type: String,
+      enum: ["active", "inactive"],
+      default: "inactive",
     },
-    create_date: {
-        type: Date,
+    text:{
+      type:String,
     }
-},{timestamps: true});
+  },
+  { timestamps: true }
+);
 
-const ControlPanel = mongoose.model("homeSettings",controlPanelSchema); 
+const ControlPanel = mongoose.model("homeSettings", controlPanelSchema);
 module.exports = ControlPanel;

@@ -1,71 +1,86 @@
-const path = require('path');
-const multer = require('multer');
-const Slider = require('../models/SliderSchema');
-const cloudinary = require('cloudinary').v2;
+const path = require("path");
+const multer = require("multer");
+const Slider = require("../models/SliderSchema");
+const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 // Set up storage engine for multer
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  folder: 'mrcs',
+  folder: "mrcs",
   // allowedFormats: ['jpg', 'jpeg', 'png'],
   allowedFormats: null,
-  transformation: [{ width: 500, height: 500, crop: 'limit' }],
+  transformation: [{ width: 500, height: 400, crop: "limit" }],
 });
 
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME, 
+  cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET
+  api_secret: process.env.API_SECRET,
 });
 
 // Initialize multer middleware
 // Set up Multer upload middleware
 const upload = multer({
   storage: storage,
-}).single('image');
+}).single("image");
 
 // Handle POST request to upload image and store image URL in database
-const addSlider = (req, res) => {
-  upload(req, res, function (err) {
-    if (err) {
-      console.log(err);
-      return res.status(400).json({ error: err.message });
-    }
-    console.log(req.file);
-
-    // Upload image to Cloudinary
-    cloudinary.uploader.upload(req.file.path, function (err, result) {
+const addSlider = async (req, res) => {
+  try {
+    upload(req, res, async function (err) {
       if (err) {
         console.log(err);
-        return res.status(500).json({ error: 'Failed to upload image to Cloudinary' });
+        return res.status(400).json({ error: err.message });
       }
-      console.log("Result is =============> ", result);
-
-      // Save image URL and status to MongoDB
+      console.log(req.file);
       const newSlider = new Slider({
-        imageUrl: result.secure_url,
-        text : req.body.text,
+        text: req.body.text,
         status: req.body.status,
-        public_id: result.public_id,
-        link : req.body.link,
+        link: req.body.link,
       });
-      newSlider.save(function (err) {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({ error: 'Failed to save slider to database' });
-        }
+
+      // Upload image to Cloudinary
+      if (req.file) {
+        cloudinary.uploader.upload(req.file.path, async function (err, result) {
+          if (err) {
+            console.log(err);
+            return res
+              .status(500)
+              .json({ error: "Failed to upload image to Cloudinary" });
+          }
+          
+          newSlider.imageUrl = result.secure_url; 
+          newSlider.public_id = result.public_id;
+
+          // Save image URL and status to MongoDB
+          await newSlider.save();
+
+          res.status(200).json({
+            message: "Slider uploaded successfully!",
+            imageUrl: newSlider.imageUrl,
+            status: newSlider.status,
+            text: newSlider.text,
+            link: newSlider.link,  // Fixed this line
+          });
+        });
+      } else {
+        await newSlider.save(); 
         res.status(200).json({
-          message: 'Slider image uploaded successfully!',
+          message: "Slider uploaded successfully!",
           imageUrl: newSlider.imageUrl,
           status: newSlider.status,
           text: newSlider.text,
+          link: newSlider.link,  // Fixed this line
         });
-      });
+      }
     });
-  });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 };
+
 
 // Handle PUT request to update a slider image
 const updateSlider = (req, res) => {
@@ -74,37 +89,73 @@ const updateSlider = (req, res) => {
       console.log(err);
       return res.status(400).json({ error: err.message });
     }
-    console.log(req.file);
 
-    // Upload image to Cloudinary
-    cloudinary.uploader.upload(req.file.path, function (err, result) {
-      if (err) {
-        console.log(err);
-        return res.status(500).json({ error: 'Failed to upload image to Cloudinary' });
-      }
-      console.log(result);
-
-      // Find and update slider in MongoDB
-      Slider.findByIdAndUpdate(req.params.id, {
-        imageUrl: result.secure_url,
-        public_id: result.public_id,
-        status: req.body.status,
-        link : req.body.link,
-        text: req.body.text,
-      }, { new: true }, function (err, updatedSlider) {
+    // Check if an image file was uploaded
+    if (req.file) {
+      // Upload image to Cloudinary
+      cloudinary.uploader.upload(req.file.path, function (err, result) {
         if (err) {
           console.log(err);
-          return res.status(500).json({ error: 'Failed to update slider in database' });
+          return res
+            .status(500)
+            .json({ error: "Failed to upload image to Cloudinary" });
         }
-        res.status(200).json({
-          message: 'Slider image updated successfully!',
-          imageUrl: updatedSlider.imageUrl,
-          status: updatedSlider.status,
-          link: updateSlider.link,
-          text:updateSlider.text,
-        });
+
+        // Find and update slider in MongoDB
+        Slider.findByIdAndUpdate(
+          req.params.id,
+          {
+            imageUrl: result.secure_url,
+            public_id: result.public_id,
+            status: req.body.status,
+            link: req.body.link,
+            text: req.body.text,
+          },
+          { new: true },
+          function (err, updatedSlider) {
+            if (err) {
+              console.log(err);
+              return res
+                .status(500)
+                .json({ error: "Failed to update slider in database" });
+            }
+            res.status(200).json({
+              message: "Slider image updated successfully!",
+              imageUrl: updatedSlider.imageUrl,
+              status: updatedSlider.status,
+              link: updatedSlider.link, // Updated here
+              text: updatedSlider.text, // Updated here
+            });
+          }
+        );
       });
-    });
+    } else {
+      // No image uploaded, update only non-image fields
+      Slider.findByIdAndUpdate(
+        req.params.id,
+        {
+          status: req.body.status,
+          link: req.body.link,
+          text: req.body.text,
+        },
+        { new: true },
+        function (err, updatedSlider) {
+          if (err) {
+            console.log(err);
+            return res
+              .status(500)
+              .json({ error: "Failed to update slider in database" });
+          }
+          res.status(200).json({
+            message: "Slider updated successfully!",
+            imageUrl: updatedSlider.imageUrl,
+            status: updatedSlider.status,
+            link: updatedSlider.link,
+            text: updatedSlider.text,
+          });
+        }
+      );
+    }
   });
 };
 
@@ -115,7 +166,7 @@ const getAllSliderImages = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      error: 'An error occurred while retrieving slider images'
+      error: "An error occurred while retrieving slider images",
     });
   }
 };
@@ -130,13 +181,13 @@ const getSliderImageById = async (req, res) => {
       res.status(200).json(sliderImage);
     } else {
       res.status(404).json({
-        error: 'Slider image not found'
+        error: "Slider image not found",
       });
     }
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      error: 'An error occurred while retrieving the slider image'
+      error: "An error occurred while retrieving the slider image",
     });
   }
 };
@@ -147,30 +198,31 @@ const deleteSlider = (req, res) => {
   Slider.findByIdAndDelete(sliderId, function (err, slider) {
     if (err) {
       console.log(err);
-      return res.status(500).json({ error: 'Failed to delete slider from database' });
+      return res
+        .status(500)
+        .json({ error: "Failed to delete slider from database" });
     }
     if (!slider) {
-      return res.status(404).json({ error: 'Slider not found' });
+      return res.status(404).json({ error: "Slider not found" });
     }
     // Delete image from Cloudinary
     cloudinary.uploader.destroy(slider.public_id, function (err, result) {
       if (err) {
         console.log(err);
-        return res.status(500).json({ error: 'Failed to delete image from Cloudinary' });
+        return res
+          .status(500)
+          .json({ error: "Failed to delete image from Cloudinary" });
       }
       console.log(result);
-      res.status(200).json({ message: 'Slider deleted successfully!' });
+      res.status(200).json({ message: "Slider deleted successfully!" });
     });
   });
 };
-
-
-
 
 module.exports = {
   addSlider,
   updateSlider,
   getSliderImageById,
   getAllSliderImages,
-  deleteSlider
+  deleteSlider,
 };
