@@ -59,6 +59,7 @@ const updateSubscription = async (req, res, next) => {
       errors: {
         common: {
           msg: 'Unknown error occurred!',
+          error: err.message
         },
       },
     });
