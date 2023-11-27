@@ -4,20 +4,28 @@ const Subscription = require("../models/SubscriptionSchema");
 // get All User Api  Controller
 const getSubscription = async (req, res, next) => {
   try {
-    const subscription = await Subscription.find();
-    res.json(subscription);
+    const subscriptions = await Subscription.find();
+    
+    // Check if any subscriptions are found
+    if (subscriptions.length > 0) {
+      const firstSubscription = subscriptions[0];
+      res.json(firstSubscription);
+    } else {
+      res.json({ msg:"No Data Found !"}); // or you can send an appropriate response for an empty array
+    }
   } catch (err) {
     return res.status(500).json({
       errors: {
         common: {
-          msg: `Unknown error occured ! ${err}`,
+          msg: `Unknown error occurred! ${err}`,
         },
       },
     });
   }
 };
 
-async function updateSubscription(req, res, next) {
+
+async function updateSubscription(req, res) {
   const { id } = req.params;
   const { subscription } = req.body;
 
